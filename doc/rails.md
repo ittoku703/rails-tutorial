@@ -321,3 +321,51 @@ end
 
 ### Drawbacks of Users resource
 
+- Data has not been verified
+- User authentication has not been performed
+- Test has not been write
+- Layout and style are not in place
+- Difficultly understanding
+
+## Microposts Resource
+
+> Creating Microposts resource using scaffold
+
+`rails generate scaffold Micropost content:text user_id:integer`
+
+> updated database
+
+`rails db:migrate`
+
+### Microposts to micro
+
+> Limit the maximum number of characters in a micropost to 140
+
+```ruby
+class Micropost < ApplicationRecord
+  validates :content, length: { maximum: 140 }
+end
+```
+
+### Users has many microposts
+
+> One user has many microposts
+
+```ruby
+class User < ApplicationRecord
+  has_many :microposts
+end
+```
+
+> One micropost belongs to one user only
+
+```ruby
+class Micropost < ApplicationRecord
+  belongs_to :user
+end
+```
+
+![Associating a micropost with a user](/Users/shinzanmono/Documents/rails_app/doc/micropost_user_association.png)
+
+### Deploying to Application
+
