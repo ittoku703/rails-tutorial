@@ -365,7 +365,9 @@ class Micropost < ApplicationRecord
 end
 ```
 
+> Associating a micropost with a user
+
 ![Associating a micropost with a user](/Users/shinzanmono/Documents/rails_app/doc/micropost_user_association.png)
 
-### Deploying to Application
+# Creating mostly static pages
 
