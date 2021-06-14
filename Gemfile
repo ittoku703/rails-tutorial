@@ -32,6 +32,7 @@ group :test do
   gem 'minitest-reporters',       '~> 1.4', '>= 1.4.3'
   gem 'guard',                    '~> 2.17'
   gem 'guard-minitest',           '~> 2.4', '>= 2.4.6'
+  gem 'rexml',                    '~> 3.2', '>= 3.2.5'
 end
 
 group :production do
