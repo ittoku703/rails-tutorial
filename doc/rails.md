@@ -371,3 +371,436 @@ end
 
 # Creating mostly static pages
 
+## static pages
+
+> Changed to Git branch 
+
+`git checkout -b static-pages`
+
+### creating static pages
+
+> Creating StaticPages Controller
+
+`rails generate controller StaticPages home help`
+
+> Add staticpages controller to Git repository
+
+`git add . && git commit -m 'Add a Static Pages controller'`
+
+`git push`
+
+#### How to Undo
+
+> Controller
+
+`rails generate controller StaticPages home help`
+
+`rails destroy  controller StaticPages home help`
+
+> Model
+
+`rails generate model User name:string email:string`
+
+`rails destroy  model User name:string email:string`
+
+> Database
+
+`rails db:migrate`
+
+`rails db:roolback`
+
+> Routing Used by `home` and `help` Actions in the StaticPages Controller
+
+```ruby
+Rails.application.routes.draw do
+  get 'static_pages/home'
+  get 'static_pages/help'
+  root 'application#hello'
+end
+```
+
+> StaticPagesController generated in `rails g controller StaticPages home help`
+
+```ruby
+class StaticPagesController < ApplicationController
+  def home
+  end
+  
+  def help
+  end
+end
+```
+
+> View generated for Home page
+
+```erb
+<h1>StaticPages#home</h1>
+<p>Find me in app/views/static_pages/home.html.erb</p>
+```
+
+> View generated for Help page
+
+```erb
+<h1>StaticPages#help</h1>
+<p>Find me in app/views/static_pages/help.html.erb</p>
+```
+
+### Adjusting Static Pages
+
+> Modifying the HTML of the home page
+
+```erb
+<h1>Sample App</h1>
+<p>
+  This is the home page for the
+  <a href="https://railstutorial.jp/">Ruby on Rails Tutorial</a>
+  sample application.
+</p>
+```
+
+> Modifying the HTML of the help page
+
+```erb
+<h1>Help</h1>
+<p>
+  Get help on the Ruby on Rails Tutorial at the
+  <a href="https://railstutorial.jp/help">Rails Tutorial help page</a>.
+  To get help on this sample app, see the
+  <a href="https://railstutorial.jp/#ebook"><em>Ruby on Rails Tutorial</em>
+  book</a>.
+</p>
+```
+
+## Start with Testing
+
+- Add About Page to StaticPagesController
+- Writing Tests and perform automated testing
+
+#### When shuld I do the test after all?
+
+- If the tests are written, they can prevent __regression bugs__ that can lead to functional failure
+- If the tests are written, the code can be safely refactored
+- Test Code acts as a client from the point of view of the application code. So it is useful for designing applications and deciding how to interface with other parts of the system
+
+- When shuld I write Tests?
+  - If test code is clearly shorter and simpler than application code, than write it "first"
+  - If the specifics of the behavior have not yet been finalized, write the application code first and ecpected behavior "later"
+  - Write tests "ahead of time" when security is a critical issue or when errors occur around security
+  - When you find a bug, write a tests "ahead of time" the reproduces the bug to prevent regression bugs before starting to fix it
+  - Write tests "later" for code that is likely to change again soon
+  - When refactoring, write tests "first". In particular, concentrate on testing code that is likely to make errors or stop
+
+### First Testing
+
+> Default Test to StaticPagesController
+
+```ruby
+class StaticPagesControllerTest < ActionDispatch::IntegrationTest
+  
+  test "should get home" do
+    get static_pages_home_url
+    assert_responce :success
+  end
+  
+  test "should get help" do
+    get static_pages_help_url
+    assert_responce :success
+  end
+end
+```
+
+### Red
+
+- __The Test-Driven Development Cycle__
+  1. Write tests "first" that fail
+  2. Write code for the application and make it successful
+  3. Refactoring if necessary
+
+> Test for About Page(RED)
+
+```ruby
+class StaticPagesControllerTest < ActionDispatch::IntegrationTest
+	...
+  test "should get about" do
+    get static_pages_about_url
+    assert_response :success
+  end
+end
+```
+
+### Green
+
+> Add a rooting for `about`
+
+```ruby
+Rails.application.routes.draw do
+  ...
+  get 'static_pages/about'
+end
+```
+
+> StaticPagesController with the about Action added
+
+```ruby
+class StaticPagesController < ApplicationController
+  ...
+  def about
+  end
+end
+```
+
+> Code of About page
+
+```erb
+<h1>About</h1>
+<p>
+  <a href="https://railstutorial.jp/">Ruby on Rails Tutorial</a>
+  is a <a href="https://railstutorial.jp/#ebook">book</a> and
+  <a href="https://railstutorial.jp/screencast">screencast</a>
+  to teach web development with
+  <a href="https://rubyonrails.org/">Ruby on Rails</a>.
+  This is the sample application for the tutorial.
+</p>
+```
+
+### Refactor
+
+- Refactoring helps keep the code beautiful and compact and does not discourage other developers or your future self from developing
+
+## Slightly dynamic pages
+
+- Rewrite the Title of page to display it by itself
+- The title Tag also plays an important role in so-called SEO(Search Engine Optimization)
+
+> Temporarily changing filename
+
+`mv app/views/layouts/application.html.erb layout_file`
+
+### Testing Title
+
+> Typical HTML Structure of a Web Page
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Greeting</title>
+  </head>
+  <body>
+    <p>Hello, world!</p>
+  </body>
+</html>
+```
+
+> Testing Title of StaticPagesController
+
+```ruby
+class StaticPagesControllerTest < ActionDispatch::IntegrationTest
+  
+  test "should get home" do
+    ...
+    assert_select "title", "Home | Ruby on Rails Tutorial Sample App"
+  end
+
+  test "should get help" do
+    ...
+    assert_select "title", "Help | Ruby on Rails Tutorial Sample App"
+  end
+
+  test "should get about" do
+    ...
+    assert_select "title", "About | Ruby on Rails Tutorial Sample App"
+  end
+end
+```
+
+### Add Title
+
+> Change title of View Home page
+
+```erb
+<html>
+  <head>
+    <title>Home | Ruby on Rails Tutorial Sample App</title>
+  </head>
+</html>
+```
+
+> Change title of View Help page
+
+```erb
+<html>
+  <head>
+    <title>Help | Ruby on Rails Tutorial Sample App</title>
+  </head>
+</html>
+```
+
+> Change title of View About page
+
+```erb
+<html>
+  <head>
+    <title>About | Ruby on Rails Tutorial Sample App</title>
+  </head>
+</html>
+```
+
+> Test of StaticsPagesController using basic_title
+
+```ruby
+class StaticPagesControllerTest < ActionDispatch::IntegrationTest
+
+  def setup
+    @base_title = "Ruby on Rails Tutorial Sample App"
+  end
+
+  test "should get home" do
+    ...
+    assert_select "title", "Home | #{@base_title}"
+  end
+  ...
+end
+```
+
+### Layout and Embed Ruby (Refactor)
+
+- Problem
+  - The titles of the pages are almost same
+  - The words "Ruby on Rails Tutorial Sample App" are repeated in three different titles
+  - The entire HTML structure is duplicated on each page
+- Repeating the same code violates the Ruby principle of "DRY" (Don't Repeat Yourself)
+
+> View of the Home page with ERB in the title
+
+```erb
+<% provide(:title, "Home") %>
+...
+<title><%= yield(:title) %> | Ruby on Rails Tutorial Sample App</title>
+```
+
+- The same applies to Help page and About page
+
+> Undo filename
+
+`mv layout_file app/views/layouts/application.html.erb`
+
+> Layout of Sample Application
+>
+> - csrf_meta_tags implement [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) to mitigate  [cross-site scripting](https://developer.mozilla.org/en-US/docs/Glossary/Cross-site_scripting) atacks
+> - `csrf_meta_tags` to mitigate [Cross-Site Request Forgery(CSRF)](https://developer.mozilla.org/ja/docs/Glossary/Cross-site_scripting) atacks
+
+```erb
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= yield(:title) %> | Ruby on Rails Tutorial Sample App</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag    'application', media: 'all',
+                               'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag    'application',
+                               'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>
+```
+
+> Home page with the HTML structure removed
+
+```erb
+<% provide(:title, "Home") %>
+```
+
+- The same applies to Help page and About page
+
+### Routing Configuration
+
+> Settings Home page as the Root URL
+
+```ruby
+Rails.application.routes.draw do
+  root 'static_pages#home'
+end
+```
+
+> Test for Root routing
+
+```ruby
+class StaticPagesControllerTest < ActionDispatch::IntegrationTest
+
+  test "should get root" do
+    get root_url
+    assert_response :success
+  end
+  ...
+end
+```
+
+> Comment out the root routing to make the test fail
+
+```ruby
+Rails.application.routes.draw do
+  # root 'static_pages#home'
+end
+```
+
+## Finally
+
+```shell
+git add -A
+git commit -m "Finish static pages"
+git checkout main
+git merge static-pages
+git push
+rails test
+git push heroku
+```
+
+## Advances Setup
+
+> Change Git branch
+
+`git co main`
+
+### minitest reporters
+
+> Enabling Tests to Display Red and Green (test/test_helper.rb)
+
+```ruby
+ENV['RAILS_ENV'] ||= 'test'
+require_relative '../config/environment'
+require 'rails/test_help'
+require 'minitest/reporters'
+Minitest::Reporters.use!
+...
+
+```
+
+### The Automation with Guard
+
+> initialize guard
+
+`bundle exec guard init`
+
+> Customized `Guardfile`
+
+```ruby
+guard :minitest, spring: "bin/rails test", all_on_start: false do
+  ...
+end
+```
+
+> Running
+
+`guard exec guard`
+
+> Do commit
+
+`git commit -am "Complete advanced testing setup`"
+
+# Rails flavored Ruby 
+
