@@ -796,11 +796,95 @@ end
 
 > Running
 
-`guard exec guard`
+`bundle exec guard`
 
 > Do commit
 
 `git commit -am "Complete advanced testing setup`"
 
 # Rails flavored Ruby 
+
+## Motivation
+
+> Create Branch
+
+`git checkout -b rails-flavored-ruby`
+
+### Embedded Helpers
+
+> The Rails built-in function `stylesheet_link_tag` allows application.css to be used for all media types
+
+```erb
+<%= stylesheet_link_tag 'application', media: 'all', 
+												'data-turbolinks-track': 'reload' %>
+```
+
+### Custom Helper
+
+> Defining full_title helper
+
+```ruby
+module ApplicationHelper
+  
+  # returns the full title for each page
+  def full_title(page_title = '')
+    base_title = "Ruby on Rails Tutorial Sample App"
+    if page_title.empty?
+      base_title
+    else
+      page_title + " | " + base_title
+    end
+  end
+end
+```
+
+> Layout of WebSite using `full_title` helper
+
+```erb
+<title><%= full_title(yield(:title)) %></title>
+```
+
+> Updating Test to Check the title of Home Page
+
+```ruby
+class StaticPagesControllerTest < ActionDispatch::IntegrationTest
+  
+  test "should get home" do
+    ...
+    assert_select 'title', "Ruby on Rails Tutorial Sample App"
+  end
+end
+```
+
+> Home page displaying the page title without any cusomization
+
+```erb
+<h1>Sample App</h1>
+<p>
+  This is the home page for the
+  <a href="https://railstutorial.jp/">Ruby on Rails Tutorial</a>
+  sample application.
+</p>
+```
+
+## String and Method
+
+- Rails console is extension of the irb(IRB: Interactive RuBy)
+
+> Add Settings file of irb
+
+```ruby
+IRB.conf[:PROMPT_MODE] = :SIMPLE
+IRB.conf[:AUTO_INDENT_MODE] = false
+```
+
+## Finally
+
+```shell
+git commit -am "Add a full-title helper"
+git checkout main
+git merge rails-flavored-ruby
+rails test
+git push && git push heroku
+```
 
