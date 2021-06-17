@@ -888,3 +888,340 @@ rails test
 git push && git push heroku
 ```
 
+# Creating Layout
+
+- Embed the Bootstrap framework into application, and add custom styles
+- Add links to the pages you have created so far (Home, About, etc) to the layout
+- Learn about partials, Rails routing, Asset Pipeline, and also get an introduction to Sass
+- At the end of the chapter, we'll take an important step to get users to login to the site
+
+## Adding Structure
+
+- Also use Bootstrap an open source web design framework published by Twitter
+- Use mockups (often called wireframes in the context of the Web) to sketch the appearance of the  application after implementation
+- Develop static pages including site logo, navigation header, and site footer
+
+> Creating Branch
+
+`git checkout -b filling-in-layout`
+
+### Navigation
+
+> Layout of Web site adding structure (app/views/layouts/application.html.erb)
+>
+> - Declare that it is HTML5 by writing`<!DOCTYPE html>` 
+> - `<!--[if lt IE 9]>` tag is only valid if the IE version is less than 9
+
+```erb
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= full_title(yield(:title)) %></title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag    'application', media: 'all',
+                               'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application',
+                               'data-turbolinks-track': 'reload' %>
+    <!--[if lt IE 9]>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/r29/html5.min.js">
+      </script>
+    <![endif]-->
+  </head>
+  <body>
+    <header class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container">
+        <%= link_to "sample app", '#', id: "logo" %>
+        <nav>
+          <ul class="nav navbar-nav navbar-right">
+            <li><%= link_to "Home",   '#' %></li>
+            <li><%= link_to "Help",   '#' %></li>
+            <li><%= link_to "Log in", '#' %></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+      <%= yield %>
+    </div>
+  </body>
+</html>
+```
+
+> Downloading an Image
+
+`curl -o app/assets/images/rails.svg -OL https://cdn.learnenough.com/rails.svg`
+
+#### exercises
+
+### Bootstrap and Cuscom CSS
+
+- Using Bootstrap, you can make your application [*Responsive Design*](https://ja.wikipedia.org/wiki/レスポンシブウェブデザイン)
+- The Rails Asset Pipeline supports the Sass language by default (very similar to LESS)
+
+> Adding `bootstrap-sass` to `Gemfile`
+>
+> - Bootstrap-sass converts LESS to Sass and makes all necessary Bootstrap files available to the current application
+
+```ruby
+source 'https://rubygems.org'
+
+gem 'bootstrap-sass', '~> 3.4', '>= 3.4.1'
+```
+
+> Creating custom CSS
+
+`touch app/assets/stylesheets/custom.sass`
+
+> Adding Bootstrap CSS (app/assets/stylesheets/custom.sass)
+
+```scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+```
+
+> Adding a Common Style to the CSS that Applies to All Pages
+
+```scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+/* universal */
+
+body {
+  padding-top: 60px;
+}
+
+section {
+  overflow: auto;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.center {
+  text-align: center;
+}
+
+.center h1 {
+  margin-bottom: 10px;
+}
+```
+
+> Adding CSS to Use Polished Typography
+
+```scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+.
+.
+.
+/* typography */
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1;
+}
+
+h1 {
+  font-size: 3em;
+  letter-spacing: -2px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.2em;
+  letter-spacing: -1px;
+  margin-bottom: 30px;
+  text-align: center;
+  font-weight: normal;
+  color: #777;
+}
+
+p {
+  font-size: 1.1em;
+  line-height: 1.7em;
+}
+```
+
+> Adding CSS to the Site logo
+
+```scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+.
+.
+.
+/* header */
+
+#logo {
+  float: left;
+  margin-right: 10px;
+  font-size: 1.7em;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  padding-top: 9px;
+  font-weight: bold;
+}
+
+#logo:hover {
+  color: #fff;
+  text-decoration: none;
+}
+```
+
+> Adding CSS for footer to Your Site
+
+```scss
+.
+.
+.
+/* footer */
+
+footer {
+  margin-top: 45px;
+  padding-top: 5px;
+  border-top: 1px solid #eaeaea;
+  color: #777;
+}
+
+footer a {
+  color: #555;
+}
+
+footer a:hover {
+  color: #222;
+}
+
+footer small {
+  float: left;
+}
+
+footer ul {
+  float: right;
+  list-style: none;
+}
+
+footer ul li {
+  float: left;
+  margin-left: 15px;
+}
+```
+
+### Partial
+
+> Adding shim and header partial to the layout
+
+```erb
+<%= render 'layouts/shim' %>
+<%= render 'layouts/header' %>
+<%= render 'layouts/footer' %>
+```
+
+> Partial for HTML shim
+
+```erb
+<!--[if lt IE 9]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/r29/html5.min.js">
+  </script>
+<![endif]-->
+```
+
+> Partial for header
+
+```erb
+<header class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container">
+    <%= link_to "sample app", '#', id: "logo" %>
+    <nav>
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to "Home",   '#' %></li>
+        <li><%= link_to "Help",   '#' %></li>
+        <li><%= link_to "Log in", '#' %></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+```
+
+> Partial for the site footer
+
+```erb
+<footer class="footer">
+  <small>
+    The <a href="https://railstutorial.jp/">Ruby on Rails Tutorial</a>
+    by <a href="https://www.michaelhartl.com/">Michael Hartl</a>
+  </small>
+  <nav>
+    <ul>
+      <li><%= link_to "About",   '#' %></li>
+      <li><%= link_to "Contact", '#' %></li>
+      <li><a href="https://news.railstutorial.org/">News</a></li>
+    </ul>
+  </nav>
+</footer>
+```
+
+##### exercises
+
+## Sass and Asset Pipeline
+
+- Asset pipeline greatly enhances productivity and management of static content such as CSS. JavaScript and images
+
+### Asset Pipeline
+
+#### Asset Directory
+
+- `app/assets`: Assets specific to the current application
+- `lib/assets`: Assets for libraries created by your development team
+- `vendor/assets`: Third-party assets (not present by default) 
+
+#### Manifest file
+
+> Manifest file for Application-Specific CSS (app/assets/stylesheets/application.css)
+>
+> `*= require_tree .` makes sure that all CSS files in the app/assets/stylesheets directory (including subdirectories) are included in the application CSS
+>
+> `*= require_self` includes application.css itself in its scope
+
+```css
+/* 
+ * ...
+ *= require_tree .
+ *= require_self
+ */
+```
+
+#### Pre-processor Engine
+
+- Determine which preprocessor to process, and order them according to the file extension
+
+#### Efficiency in production environments
+
+- One of the biggest benefits of the asset pipeline is that it also automatically generates that are optimized to be efficient in production applications
+
+### StyleSheets with a great syntax
+
+> SCSS can be nest
+
+```scss
+.center {
+  text-align: center;
+  h1 {
+    margin-bottom: 10px;
+  }
+}
+```
+
+> SCSS can be handle variables
+
+```scss
+$light-gray: #777;
+```
+
+#### excisices
+
+## Layout links
+
