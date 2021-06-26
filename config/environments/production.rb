@@ -68,7 +68,7 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
-  host = 'shinzanmono.herokuapp.com'
+  host = 'rails-yivtgwnc.herokuapp.com'
   config.action_mailer.default_url_options = { 
     :port           => ENV['MAILGUN_SMTP_PORT'], 
     :address        => ENV['MAILGUN_SMTP_SERVER'], 
