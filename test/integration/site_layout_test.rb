@@ -15,6 +15,8 @@ class SiteLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', about_path
     assert_select 'a[href=?]', contact_path
     assert_select 'a[href=?]', signup_path
+    assert_select 'a[href=?]', following_user_path(@user), count: 0
+    assert_select 'a[href=?]', followers_user_path(@user), count: 0
   end
 
   test "layout links for logged in users" do
@@ -24,5 +26,7 @@ class SiteLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', user_path(@user)
     assert_select 'a[href=?]', edit_user_path(@user)
     assert_select 'a[href=?]', logout_path
+    assert_select 'a[href=?]', following_user_path(@user)
+    assert_select 'a[href=?]', followers_user_path(@user)
   end
 end
